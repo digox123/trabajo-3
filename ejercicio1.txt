@@ -1,0 +1,17 @@
+(deftemplate numero
+    (slot valor))
+
+(defrule inicializar
+    =>
+    (assert (numero (valor 10)))
+    (assert (numero (valor 3)))
+    (assert (numero (valor 7)))
+    (assert (numero (valor 2)))
+    (assert (numero (valor 5))))
+
+(defrule encontrar-minimo
+    (declare (salience 10))
+    ?f1 <- (numero (valor ?x))
+    (not (numero (valor ?y&:(< ?y ?x))))
+    =>
+    (printout t "El mínimo valor es: " ?x crlf))
