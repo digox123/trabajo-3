@@ -1,0 +1,41 @@
+
+(deftemplate cadena
+    (slot letra))
+
+(deftemplate union
+    (multislot letras))  
+
+(defrule inicializar
+    =>
+    (assert (cadena (letra B)))
+    (assert (cadena (letra C)))
+    (assert (cadena (letra A)))
+    (assert (cadena (letra D)))
+    (assert (cadena (letra E)))
+    (assert (cadena (letra E)))
+    (assert (cadena (letra B)))
+    (assert (cadena (letra C)))
+    (assert (cadena (letra E)))
+    (assert (cadena (letra E)))
+    (assert (cadena (letra B)))
+    (assert (cadena (letra C)))
+    (assert (cadena (letra A)))
+    (assert (cadena (letra F)))
+    (assert (cadena (letra E)))
+    (assert (union (letras))))  ; la union
+
+; Regla para crear la unión sin duplicados
+(defrule calcular-union
+    ?letra <- (cadena (letra ?x))
+    ?u <- (union (letras $?lista))
+    (not (test (member$ ?x $?lista)))  ; Evita duplicados
+    =>
+    (retract ?u)
+    (assert (union (letras $?lista ?x))))  ; Agrega el elemento
+
+; Regla para mostrar el resultado final
+(defrule mostrar-union
+    (union (letras $?lista))
+    =>
+    (printout t "(union " $?lista ")" crlf))
+

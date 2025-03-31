@@ -1,0 +1,38 @@
+(clear)
+
+(deftemplate numero
+    (slot valor))
+
+(deftemplate suma
+    (slot total))
+
+(defrule inicializar
+    =>
+    (assert (numero (valor 4)))
+    (assert (numero (valor 7)))
+    (assert (numero (valor 1)))
+    (assert (numero (valor 9)))
+    (assert (numero (valor 3))))
+
+(defrule calcular-suma
+    (declare (salience 10))
+    =>
+    (assert (suma (total 0))))
+
+(defrule sumar-elementos
+    ?s <- (suma (total ?t))
+    ?n <- (numero (valor ?v))
+    =>
+    (retract ?s)
+    (assert (suma (total (+ ?t ?v))))
+    (retract ?n))
+
+(defrule mostrar-suma
+    (suma (total ?t))
+    (not (numero (valor ?)))
+    =>
+    (printout t "La suma total es: " ?t crlf))
+
+(reset)
+(run)
+

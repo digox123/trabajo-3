@@ -1,0 +1,38 @@
+(deftemplate Pais
+    (slot Nombre)
+    (multislot Bandera))  ; Almacena los colores 
+
+(defrule inicializar
+    =>
+    (assert (Pais (Nombre Argentina) (Bandera Blanco Celeste)))
+    (assert (Pais (Nombre Brasil) (Bandera Verde Amarillo Azul Blanco)))
+    (assert (Pais (Nombre Alemania) (Bandera Negro Rojo Amarillo)))
+    (assert (Pais (Nombre España) (Bandera Rojo Amarillo)))
+    (assert (Pais (Nombre Francia) (Bandera Azul Blanco Rojo)))
+    (assert (Pais (Nombre Italia) (Bandera Verde Blanco Rojo)))
+    (assert (Pais (Nombre México) (Bandera Verde Blanco Rojo)))
+    (assert (Pais (Nombre Colombia) (Bandera Amarillo Azul Rojo)))
+    (assert (Pais (Nombre Japón) (Bandera Blanco Rojo)))
+    (assert (Pais (Nombre Sudáfrica) (Bandera Rojo Azul Verde Amarillo Negro Blanco))))
+
+; Definir la plantilla para colores que el usuario busca
+(deftemplate ColoresABuscar
+    (multislot Colores))
+
+; Función para verificar si una lista es subconjunto de otra
+(deffunction subset (?lista1 $?lista2)
+    (if (not (length$ ?lista1)) then TRUE)
+    (if (member$ (nth$ 1 ?lista1) ?lista2)
+        then (subset (rest$ ?lista1) ?lista2)
+        else FALSE))
+
+; Regla para encontrar países cuya bandera contenga todos los colores buscados
+(defrule buscar-paises
+    (ColoresABuscar (Colores $?colores-buscados))
+    ?pais <- (Pais (Nombre ?nombre) (Bandera $?colores-bandera))
+    (test (subset $?colores-buscados $?colores-bandera))  ; Verifica que todos los colores buscados están en la bandera
+    =>
+    (printout t "El país " ?nombre " contiene todos los colores buscados." crlf))
+
+
+
